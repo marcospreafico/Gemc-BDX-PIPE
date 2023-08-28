@@ -1,0 +1,34 @@
+<gcard>
+<option name="DBHOST" value="clasdb.jlab.org"/>
+<option name="DATABASE" value="clas12_simulation"/>
+<option name="HIT_PROCESS_LIST" value="BDX"/>
+<detector name="bdx" factory="TEXT" variation="threeveto"/>
+<option name="INTEGRATEDRAW" value="cormo flux veto crs"/>
+<option name="geometry" value="900x600"/>
+<option name="HALL_MATERIAL"   value="Vacuum" />
+<option name="HALL_DIMENSIONS" value="100.*m,100.*m,100.*m" />
+<option name="MAX_X_POS"   value="50000." />
+<option name="MAX_Y_POS"   value="30000." />
+<option name="MAX_Z_POS"   value="50000." />
+
+<option name="PHYSICS"   value="STD + HP" />
+	
+<!--<option name="INTEGRATEDRAW" value="cormo flux veto crs"/>-->
+	
+<!--<option name="OUTPUT" value="evio, out_flux_mu.evio"/>-->
+<!--		<option name="PRINT_EVENT"   value="1" />-->
+
+<!--<option name="BEAM_P"   value="mu-,4*GeV, 0*deg, 0*deg"/>-->
+<!--<option name="SPREAD_P" value="100*MeV, 10*deg, 10*deg"/>-->
+<!--<option name="SPREAD_V" value="(2.,0.)cm"/>-->
+<!--<option name="BEAM_V" value="(0,0,100)cm"/>-->
+
+
+<!--<option name="ENERGY_CUT"   value="10*MeV" />-->
+<option name="ENERGY_CUT"   value="0.001*MeV" />
+
+<!-- <option name="G4TRACK_VERBOSITY" value="2" />-->
+<option name="RECORD_PASSBY" value="1" />
+
+
+</gcard>

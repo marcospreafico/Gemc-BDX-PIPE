@@ -1,0 +1,39 @@
+# Configuration file for BDX
+
+# Detector name and variation
+detector_name: bdx
+variation:     threeveto
+# variation: normal = all crystal vertical
+# variation: rotated = alternating horizontal and vertical cyrstals
+# variation: ideal = best configuration found during design
+# variation: threeveto = configuration with 3 vetoes
+
+
+# Crystal parameters 
+a: 2.9 # side of crystal in central cube
+A: 2.9 # side of cystal in outer layers
+wrap: 0.1 # thickness of wrapping (spacing between crystals)
+l: 20.0 #crystal lenght 
+
+# Detector design parameters
+L: 22.5 # side of central cube
+n_lower: 5 # number of crystal in the innermost outer layer
+n_upper: 0 # number of crystals in the outermost outer layer
+
+# Factory can be MYQL or TEXT
+factory:       TEXT
+
+# run ranges and variation will apply to geometry, materials and parameters
+rmin:       1
+rmax:       10000000
+
+# MYSQL server and databse if MYSQL factory is selected
+dbhost: clasdb.jlab.org
+
+# Comments/Description
+comment:       This is the first implementation of the Forward Tagger
+
+# Verbosity controls the perl script output
+verbosity: 0
+
+
