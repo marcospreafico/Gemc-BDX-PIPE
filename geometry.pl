@@ -404,7 +404,7 @@ sub make_ecal
 	my $X = $L/2+ 3*$AA ; 
 	my $Y = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-        my $thisy = $n_core*10+0;
+        my $thisy = $n_core*10+10;
         my $thisx = ($n_core-$n_upper)*5+10*$ix;
 	$detector{"name"}        = "crs_top_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
@@ -561,7 +561,7 @@ sub make_ecal
 	my $Y = $L/2+ 3*$AA ;
 	my $X = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-        my $thisx = $n_core*10+0;
+        my $thisx = $n_core*10+10;
         my $thisy = ($n_core-$n_upper)*5+10*$ix;
 	$detector{"name"}        = "crs_right_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
