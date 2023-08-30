@@ -335,9 +335,11 @@ sub make_ecal
             $Y = 0;
         }
         my %detector = init_det();
-	    $detector{"name"}        = "crs_central_"."$ix"."_"."$iy"."_"."$module";
+        my $thisx = 10*$ix;
+        my $thisy = 10*$iy;
+	    $detector{"name"}        = "crs_central_"."$thisx"."_"."$iy"."_"."$module";
 	    $detector{"mother"}      = "mutest_vessel_air";
-        $detector{"description"} = "Panda PbWO4 crystal central"."$ix"."$iy"."$module";
+        $detector{"description"} = "Panda PbWO4 crystal central"."$thisx"."$iy"."$module";
 	    $detector{"color"}       = "1c86ea"; #"000000";#"ffffff";
 	    $detector{"style"}       = 0;
 	    $detector{"visible"}     = 1;
@@ -351,9 +353,9 @@ sub make_ecal
 	    $detector{"material"}    = "G4_PbWO4";
 	    $detector{"sensitivity"} = "crs";
 	    $detector{"hit_type"}    = "crs";
-	    my $man=400+$chcount;
-	    $chcount = $chcount + 1; 
-	    $detector{"identifiers"} = "sector manual $man xch manual $ix ych manual $iy zch manual $module";
+        my $man=400+$chcount;
+	    $chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	    print_det(\%configuration, \%detector);
 	}
     }
@@ -377,9 +379,11 @@ sub make_ecal
     my $Y = -$n_lower*$AA + $AA+ 2*$ix*$AA;
 	#-$L/2+ 3*$a + $ix * 2 * $a; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_top_"."$ix"."_"."0"."_"."$module";
+        my $thisy = $n_core*10+0;
+        my $thisx = ($n_core-$n_lower)*5+10*$ix;
+	$detector{"name"}        = "crs_top_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal top"."$ix"."0"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal top"."$thisx"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea"; #"000000";#"ff0000";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -391,8 +395,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 100 zch manual $module";
+	$chcount = $chcount + 1;
+	$detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
     #upper part
@@ -400,9 +404,11 @@ sub make_ecal
 	my $X = $L/2+ 3*$AA ; 
 	my $Y = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_top_"."$ix"."_"."1"."_"."$module";
+        my $thisy = $n_core*10+0;
+        my $thisx = ($n_core-$n_upper)*5+10*$ix;
+	$detector{"name"}        = "crs_top_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal top"."$ix"."1"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal top"."$thisx"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -414,8 +420,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 100 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
     
@@ -425,9 +431,11 @@ sub make_ecal
 	my $X = -$outer_pos;
 	my $Y = -$n_lower*$AA + $AA+ 2*$ix*$AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_bottom_"."$ix"."_"."0"."_"."$module";
+        my $thisy = -10;
+        my $thisx = ($n_core-$n_lower)*5+10*$ix;
+	$detector{"name"}        = "crs_bottom_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal bottom"."$ix"."0"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal bottom"."$thisx"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea"; #"000000";#"00ff00";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -439,8 +447,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 200 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
     #upper part
@@ -448,9 +456,11 @@ sub make_ecal
 	my $X = -$L/2- 3*$AA ; 
 	my $Y = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_bottom_"."$ix"."_"."1"."_"."$module";
+        my $thisy = -20;
+        my $thisx = ($n_core-$n_upper)*5+10*$ix;
+	$detector{"name"}        = "crs_bottom_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal bottom"."$ix"."1"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal bottom"."$thisx"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -462,8 +472,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 200 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
 
@@ -473,9 +483,11 @@ sub make_ecal
 	my $Y = -$outer_pos ;
 	my $X = -$n_lower*$AA + $AA+ 2*$ix*$AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_left_"."$ix"."_"."0"."_"."$module";
+        my $thisx = -10;
+        my $thisy = ($n_core-$n_lower)*5+10*$ix;
+	$detector{"name"}        = "crs_left_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal left"."$ix"."0"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal left"."$thisx"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea"; #"000000";#"0000ff";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -487,18 +499,20 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 300 zch manual $module";
-	print_det(\%configuration, \%detector);
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
+        print_det(\%configuration, \%detector);
     }
     #upper part
     for(my $ix = 0; $ix< $n_upper; $ix++){
 	my $Y = -$L/2 - 3*$AA ;  
 	my $X = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_left_"."$ix"."_"."1"."_"."$module";
+        my $thisx = -20;
+        my $thisy = ($n_core-$n_upper)*5+10*$ix;
+	$detector{"name"}        = "crs_left_"."$thisx"."_"."$thisx"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal left"."$ix"."1"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal left"."$ix"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -510,8 +524,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 300 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
 
@@ -522,9 +536,11 @@ sub make_ecal
 	my $X = -$n_lower*$AA + $AA+ 2*$ix*$AA; 
 	
 	my %detector = init_det();
-	$detector{"name"}        = "crs_right_"."$ix"."_"."0"."_"."$module";
+        my $thisx = $n_core*10+0;
+        my $thisy = ($n_core-$n_lower)*5+10*$ix;
+	$detector{"name"}        = "crs_right_"."$ix"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal right"."$ix"."0"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal right"."$ix"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea"; #"000000";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -536,8 +552,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 400 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
     #upper part
@@ -545,9 +561,11 @@ sub make_ecal
 	my $Y = $L/2+ 3*$AA ;
 	my $X = -$n_upper*$AA + $AA + $ix * 2 * $AA; 
 	my %detector = init_det();
-	$detector{"name"}        = "crs_right_"."$ix"."_"."1"."_"."$module";
+        my $thisx = $n_core*10+0;
+        my $thisy = ($n_core-$n_upper)*5+10*$ix;
+	$detector{"name"}        = "crs_right_"."$thisx"."_"."$thisy"."_"."$module";
 	$detector{"mother"}      = "mutest_vessel_air";
-	$detector{"description"} = "Panda PbWO4 crystal right"."$ix"."1"."$module";
+	$detector{"description"} = "Panda PbWO4 crystal right"."$ix"."$thisy"."$module";
 	$detector{"color"}       = "1c86ea"; #"000000";
 	$detector{"style"}       = 0;
 	$detector{"visible"}     = 1;
@@ -559,8 +577,8 @@ sub make_ecal
 	$detector{"sensitivity"} = "crs";
 	$detector{"hit_type"}    = "crs";
 	my $man=400+$chcount;
-	$chcount = $chcount + 1; 
-	$detector{"identifiers"} = "sector manual $man xch manual $ix ych manual 400 zch manual $module";
+	$chcount = $chcount + 1;
+        $detector{"identifiers"} = "sector manual $man xch manual $thisx ych manual $thisy zch manual $module";
 	print_det(\%configuration, \%detector);
     }
     if($module == 0){
