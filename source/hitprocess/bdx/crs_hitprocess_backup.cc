@@ -7,7 +7,9 @@
 
 // Root utils
 #include <TF1.h>
-
+#include <TFile.h>
+#include <TGraph.h>
+#include <TH1D.h>
 // CLHEP units
 #include "CLHEP/Units/PhysicalConstants.h"
 using namespace CLHEP;
@@ -196,8 +198,6 @@ map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
         ADCR_crs = (peR_int_crs)/(light_yield_crs * sensor_qe_crs * optical_coupling * light_coll_crs * 0.5 * sigfrac); // in MeV
         ADCL_crs = (peL_int_crs)/(light_yield_crs * sensor_qe_crs * optical_coupling * light_coll_crs * 0.5 * sigfrac);
         
-        //cout << peL_crs << " " << peL_int_crs/sigfrac << " ( was " << peL_int_crs << ")" << endl;
-        
 		TDCR_crs = int(tim) + ((time_min_crs[1] + T_offset_crs + G4RandGauss::shoot(0., sigmaTR_crs)) * tdc_conv_crs);
         TDCL_crs = int(tim) + ((time_min_crs[0] + T_offset_crs + G4RandGauss::shoot(0., sigmaTR_crs)) * tdc_conv_crs); // assigning to L the sipm2
         
@@ -304,38 +304,51 @@ double* crs_HitProcess::WaveForm(double npe, double* time) {
         AmpWF[s] = smp_t * 1000. * func;
     }
     static double frac = 1 - ((p[2] * exp(-smp_t * Nch_digi / p[1]) + p[4] * exp(-smp_t * Nch_digi / p[3])));// fraction of pe in Nch_digi
-  
-    npe = npe*frac;
-   
-    /*for (unsigned int s = 1; s <= npe; s++) {
-        double t = tdistrib->GetRandom(0, Nch_digi * smp_t); // time in usec
-        // spreading time and amplitude of the ampli signal
-        t = G4RandGauss::shoot(t, t_spread);
-        if (t < 0.) t = 0.;
-        it = t / smp_t;
 
-        for (unsigned int s = 0; s < 80; s++) {
-            t = 1000. * s * smp_t;
-            double func = AmpWF[s];
-            func = G4RandGauss::shoot(func, A_spread);
-            if ((s + it) < Nch_digi) WFsample[s + it] = WFsample[s + it] + func;
-        }
-    }*/
+    // cambiare generazione
+    // generare anche singola forma d'onda piu lunga e integrare su fraizone del tempo
     
-    double y, rr, WF;
+
+	// fraction of pe in Nch_digi
+    // TEST: build waveform using effective number of phe in a limited time
+    int Nch_digi1 = 800; //Number of samples in waveform - 2500 = 10 us
+    static double* WFsample1 = new double[Nch_digi1+200]; // Needs to be >  Nch_digi+size of the response to the single pe
+    for (unsigned int s = 0; s < Nch_digi1+200; s++) { WFsample1[s] = 0; }
+    
+    static double frac1 = 1 - ((p[2] * exp(-smp_t * Nch_digi1 / p[1]) + p[4] * exp(-smp_t * Nch_digi1 / p[3])));
+	int Npe = frac1 * npe;
+    
+   
+    
+    TH1D* ht1 = new TH1D("ht1", "th1", 100, 0, 0);
+    for (unsigned int s = 1; s <= Npe; s++) {
+		double t = tdistrib->GetRandom(0, Nch_digi1 * smp_t); // time in usec
+        ht1->Fill(t);
+		// spreading time and amplitude of the ampli signal
+		t = G4RandGauss::shoot(t, t_spread);
+        if (t < 0.) t = 0.;
+		it = t / smp_t;
+
+		for (unsigned int s = 0; s < 80; s++) {
+			t = 1000. * s * smp_t;
+			double func = AmpWF[s];
+			func = G4RandGauss::shoot(func, A_spread);
+			if ((s + it) < Nch_digi1) WFsample1[s + it] = WFsample1[s + it] + func;
+		}
+	}
+    double int_tf1 = 0;
+    TGraph* wf_tf1_gen = new TGraph();
+    for (unsigned int s = 0; s < Nch_digi1+200; s++) {
+        wf_tf1_gen->SetPoint(s, s, WFsample1[s]);
+        int_tf1+=WFsample1[s];
+        WFsample1[s] = 0;
+    }
+    
+    // TEST: build waveform using total number of phe spread in a large time window
+    TH1D* ht = new TH1D("ht", "th", 100, 0, 0);
     for (unsigned int s = 1; s <= npe; s++) {
-        y = 1.;
-        WF = 0.;
-        double t;
-        while (y > WF) {
-            rr = (rand() % 1000000 + 1) / 1000000.; // rnd number between 0-1
-            t = Nch_digi * smp_t * rr; // extracting over 5000 samples range (5000x4ns=20us)
-            //WF= 1./5.15*((1-exp(p[0]+p[1]*t))*exp(p[2]+p[3]*t)+exp(p[4]+p[5]*t));
-            WF = (p[2] / p[1] * exp(-t / p[1]) + p[4] / p[3] * exp(-t / p[3])) / (p[2] / p[1] + p[4] / p[3]); //pulire facendo estrazione da questa funzione
-            rr = (rand() % 1000000 + 1) / 1000000.; // rnd number between 0-1
-            y = rr;
-            //  cout << "WF " << WF   << " rnd " << y  << endl;
-        }
+        double t = tdistrib->GetRandom(0, Nch_digi * smp_t); // time in usec
+        ht->Fill(t);
         // spreading time and amplitude of the ampli signal
         t = G4RandGauss::shoot(t, t_spread);
         if (t < 0.) t = 0.;
@@ -349,6 +362,72 @@ double* crs_HitProcess::WaveForm(double npe, double* time) {
         }
     }
     
+    double int_long = 0;
+    TGraph* wf_long_gen= new TGraph();
+    for (unsigned int s = 0; s < Nch_digi+200; s++) {
+        wf_long_gen->SetPoint(s, s, WFsample[s]);
+        int_long+=WFsample[s];
+        WFsample[s] = 0;
+    }
+    
+    // TEST: old waveform generation
+    double y, rr, WF;
+    for (unsigned int s = 1; s <= Npe; s++) {
+        y = 1.;
+        WF = 0.;
+        double t;
+        while (y > WF) {
+            rr = (rand() % 1000000 + 1) / 1000000.; // rnd number between 0-1
+            t = Nch_digi1 * smp_t * rr; // extracting over 5000 samples range (5000x4ns=20us)
+            //WF= 1./5.15*((1-exp(p[0]+p[1]*t))*exp(p[2]+p[3]*t)+exp(p[4]+p[5]*t));
+            WF = (p[2] / p[1] * exp(-t / p[1]) + p[4] / p[3] * exp(-t / p[3])) / (p[2] / p[1] + p[4] / p[3]); //pulire facendo estrazione da questa funzione
+            rr = (rand() % 10000000 + 1) / 10000000.; // rnd number between 0-1
+            y = rr;
+            //  cout << "WF " << WF   << " rnd " << y  << endl;
+        }
+        // spreading time and amplitude of the ampli signal
+        t = G4RandGauss::shoot(t, t_spread);
+        if (t < 0.) t = 0.;
+        it = t / smp_t;
+
+        for (unsigned int s = 0; s < 80; s++) {
+            t = 1000. * s * smp_t;
+            double func = AmpWF[s];
+            func = G4RandGauss::shoot(func, A_spread);
+            if ((s + it) < Nch_digi1) WFsample1[s + it] = WFsample1[s + it] + func;
+        }
+    }
+    
+    double int_old =0;
+    TGraph* wf_old_gen= new TGraph();
+    for (unsigned int s = 0; s < Nch_digi1+200; s++) {
+        int_old+=WFsample1[s];
+        wf_old_gen->SetPoint(s, s, WFsample1[s]);
+    }
+    
+    cout << " %%% " << endl;
+    cout << "Old:   " << int_old << endl;
+    cout << "TF1:   " << int_tf1 << endl;
+    cout << "Long:  " << int_long*frac1 << " (total integral = " << int_long << " - fraction = " << frac1 << endl;
+    
+    
+    if(Npe>1000){
+        TFile* ftest = new TFile("wf.root", "RECREATE");
+        wf_tf1_gen->SetTitle("TF1_generator");
+        wf_tf1_gen->SetName("TF1_generator");
+        wf_long_gen->SetTitle("long_generator");
+        wf_long_gen->SetName("long_generator");
+        wf_old_gen->SetTitle("old_generator");
+        wf_old_gen->SetName("old_generator");
+        
+        ftest->cd();
+        wf_tf1_gen->Write();
+        wf_long_gen->Write();
+        wf_old_gen->Write();
+        ht->Write();
+        ftest->Write();
+        ftest->Close();
+    }
 	// mimicking a CF discriminatorm at 1/3 of the max signal
 	*time = 0.;
 	double time_max = -100;
@@ -361,6 +440,20 @@ double* crs_HitProcess::WaveForm(double npe, double* time) {
 		s++;
 	}
 
+	// cout<<s_time_max<<"  "<< time_max<< "  "<<*time <<endl;
+
+	/* // mimicking a FixedT discriminatorm
+	 for(unsigned int s=0; s<1000; s++)
+	 {
+	 //cout << s  << " " <<  WFsample[s] << endl ;
+	 //look for the max
+
+	 if(WFsample[s]>threshold)
+	 {*time=1000.*s*smp_t; //time in ns
+	 break;
+	 }
+	 }
+	 */
 	return WFsample;
 
 }

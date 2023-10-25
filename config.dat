@@ -2,23 +2,47 @@
 
 # Detector name and variation
 detector_name: bdx
-variation:     threeveto
-# variation: normal = all crystal vertical
-# variation: rotated = alternating horizontal and vertical cyrstals
-# variation: ideal = best configuration found during design
-# variation: threeveto = configuration with 3 vetoes
+variation:     proposal #pbwo_core
+
+#other variations
+# proposal = normal calorimeter
+# pbwo_core = core of pbwo crystal and csi around
 
 
 # Crystal parameters 
-a: 2.9 # side of crystal in central cube
-A: 2.9 # side of cystal in outer layers
-wrap: 0.1 # thickness of wrapping (spacing between crystals)
-l: 20.0 #crystal lenght 
+crs:   CsI	      # crystals used
+
+# Modular design
+modules  :		3		# a module is a block ECal + veto
+columns :  		10		# columns (cristals along x)
+rows : 			10		# rows (crystals along y)
+depth : 		2		# number of matrixes in the same module
+
+# design parameters for cristal perpendicular to beam axis
+vertical_crystals:  	0		# turn on vertical crystal orientation
+planes : 	    	10		# number of planes in a single module
+plane_side: 		11		# number of columns/rows per vertical plane
+
+# Design parameters (change only if necessary) -- all in cm
+cr_mylar : 	    0.005   	 # mylar thickness
+cr_air : 	    0.01	 # air gap around mylar
+cr_alv : 	    0.02	 # alveolus thickness
+
+crs_gap : 	    1.0 	 # gap between crystal
+veto_gap : 	    1.0		 # gap between two veto layers
+
+# Veto design
+paddle_max_width :		1000.0		# max side of plastic scintillator paddle
+pb_tk :		 		2.0		# lead thickness
+iv_tk : 			1.0		# inner veto plastic thickness
+ov_tk : 			1.0		# outer veto plastic thickness
+
+# parameters for variation with pbwo core
+core_side :  	 	   	4		# side of pbwo core
+dep_csi   : 			2		# depth in number of csi crystals
 
 # Detector design parameters
-L: 22.5 # side of central cube
-n_lower: 5 # number of crystal in the innermost outer layer
-n_upper: 0 # number of crystals in the outermost outer layer
+rotation:  0	      # rotate crystals 
 
 # Factory can be MYQL or TEXT
 factory:       TEXT
