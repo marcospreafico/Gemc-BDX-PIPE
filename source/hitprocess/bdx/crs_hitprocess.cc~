@@ -13,7 +13,6 @@
 using namespace CLHEP;
 
 map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
-  
 	map<string, double> dgtz;
 	vector<identifier> identity = aHit->GetId();
 

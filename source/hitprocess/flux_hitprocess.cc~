@@ -3,7 +3,7 @@
 
 map<string, double> flux_HitProcess :: integrateDgt(MHit* aHit, int hitn)
 {
-    
+  cout << a << endl;
 	map<string, double> dgtz;
 	vector<identifier> identity = aHit->GetId();
 	
@@ -16,14 +16,14 @@ map<string, double> flux_HitProcess :: integrateDgt(MHit* aHit, int hitn)
 	trueInfos tInfos(aHit);
 	
 	dgtz["hitn"]      = hitn;
-	dgtz["sector"]    = identity[0].id;
-	dgtz["layer"]     = identity[1].id;
-	dgtz["component"] = identity[2].id;
+	dgtz["sector"]    = 1;
+	dgtz["layer"]     = 1;
+	dgtz["component"] = id;
 	dgtz["ADC_order"] = 0;
-	dgtz["ADC_ADC"]   = tInfos.eTot*1000.0;
+	dgtz["ADC_ADC"]   = tInfos.eTot;
 	dgtz["ADC_time"]  = (int) tInfos.time;
 	dgtz["ADC_ped"]   = 0;
-    
+	
 	return dgtz;
 }
 

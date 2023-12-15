@@ -13,10 +13,10 @@ variation:     proposal #pbwo_core
 crs:   CsI	      # crystals used
 
 # Modular design
-modules  :		3		# a module is a block ECal + veto
+modules  :		1		# a module is a block ECal + veto
 columns :  		10		# columns (cristals along x)
 rows : 			10		# rows (crystals along y)
-depth : 		2		# number of matrixes in the same module
+depth : 		8		# number of matrixes in the same module
 
 # design parameters for cristal perpendicular to beam axis
 vertical_crystals:  	0		# turn on vertical crystal orientation
@@ -27,13 +27,15 @@ plane_side: 		11		# number of columns/rows per vertical plane
 cr_mylar : 	    0.005   	 # mylar thickness
 cr_air : 	    0.01	 # air gap around mylar
 cr_alv : 	    0.02	 # alveolus thickness
+alv_out_side: 	    7.0		 # external side of alveoli
+cap_tk: 	    2.5		 # thickness of 3d printed cap 
 
-crs_gap : 	    1.0 	 # gap between crystal
-veto_gap : 	    1.0		 # gap between two veto layers
+crs_gap : 	    1 	 # gap between crystal
+veto_gap : 	    0.5		 # gap between two veto layers
 
 # Veto design
 paddle_max_width :		1000.0		# max side of plastic scintillator paddle
-pb_tk :		 		2.0		# lead thickness
+pb_tk :		 		2.0 #2.0		# lead thickness
 iv_tk : 			1.0		# inner veto plastic thickness
 ov_tk : 			1.0		# outer veto plastic thickness
 

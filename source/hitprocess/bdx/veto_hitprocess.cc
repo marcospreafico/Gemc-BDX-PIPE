@@ -165,6 +165,7 @@ map<string, double> veto_HitProcess::integrateDgt(MHit* aHit, int hitn) {
 	int sector = identity[0].id;
 	int veto_id = identity[1].id;
 	int channel = identity[2].id;
+    int mod = identity[3].id;
 
 	// Digitization Parameters
 
@@ -1152,6 +1153,7 @@ map<string, double> veto_HitProcess::integrateDgt(MHit* aHit, int hitn) {
 	dgtz["hitn"] = hitn;
 	dgtz["sector"] = sector;
 	dgtz["veto"] = veto_id;
+    dgtz["module"] = mod; 
 	dgtz["channel"] = channel;
 	dgtz["adc1"] = ADC1;        // output in pe
 	dgtz["adc2"] = ADC2;        //deposited energy in keV

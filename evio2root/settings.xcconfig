@@ -1,0 +1,46 @@
+// xcode project for banks
+//
+// 1. on the general project add configuration for debug and release
+//
+// 2. Drag libraries to projects
+//
+//    rootlibs: open $ROOTSYS/lib/root
+//     Core RIO Tree
+//
+//    geant4libs: open $G4ROOT/$G4VERSION/lib
+//     global graphics_reps
+//
+// 3. Drag frameworks to project:
+//
+//    Qt: open  $QTDIR/lib
+//     Core Gui Sql Xml
+//
+// 4. add c++ library target "banks", source is banks.cc
+//    add framework qtcore to banks
+//
+// 5. add command tools evioDump, source is evioDum and bank_options.cc
+//    remove main.cpp created
+//    add libraries and frameworks accordingly:
+//    - add libraries banks in build phases "dependencies" and libraries
+//    - g4global, g4graphics (for a colour)
+//    - QtXml, QtGui
+//
+// 6. In both banks and all targets c++ standard library should be stdc++
+
+
+// Assigning a relative path to JLAB_SOFTWARE (The osrelease name doesn't work)
+JLAB_SOFTWARE = "/opt/jlab_software/devel/Darwin_macosx10.8-x86_64-gcc4.2.1"
+
+// Sourcing $JLAB_SOFTWARE/../ce/settings.xcconfig
+#include "/opt/projects/ceInstall/devel/ce/settings.xcconfig"
+
+// installation of libraries and binaries
+CONFIGURATION_BUILD_DIR = lib
+
+// including EVIO and QT
+HEADER_SEARCH_PATHS    =  $EVIO_HEADS $QT_HEADS $GEMC_HEADS $CLHEP_HEADS $GEANT4_HEADS $ROOT_HEADS
+
+LIBRARY_SEARCH_PATHS    = $EVIO_LIBP /sw/lib $GEMC_LIBP $ROOT_LIBP $CLHEP_LIBP 
+
+OTHER_LDFLAGS = $EVIO_LIBS $GEMC_LIBS $CLHEP_LIBS  
+

@@ -44,7 +44,8 @@ print "CONFIGURATION IS ::: ",$configuration{"variation"},"\n";
 # Loading FT specific subroutines
 require "./hit.pl";
 require "./bank.pl";
-require "./geometry.pl";
+#require "./geometry_with_dump.pl";
+require "./geometry_mega.pl";
 require "./materials.pl";
 
 define_banks();
