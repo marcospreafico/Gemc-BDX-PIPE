@@ -61,9 +61,9 @@ using namespace gstring;
 // no idea what's this for 
 //#include "G4Transportation.hh"
 
-// Standard LDM scattering
-#include "G4DarkMatter.h"
-#include "G4LDMEleScattering.h"
+// Scalar-related processes 
+#include "G4MuonScalarProduction.h"
+#include "G4Scalar.h"
 
 
 #include "G4HadronicProcessStore.hh"
@@ -369,60 +369,18 @@ void PhysicsList::ConstructParticle() {
     G4MuonMinus::MuonMinusDefinition()->SetDecayTable(MuonMinusDecayTable);
   }
 
-  /* Here I set all the parameters for the standard LDM model */
-    // for semplicity I take the same option input as for Andrea's code of LDM
+  /*Here construct the scalar - get the mass*/
 
-    if (gemcOpt.optMap["DARK_PHOTON"].args == "no" || gemcOpt.optMap["DARK_MATTER"].args == "no" || gemcOpt.optMap["DARK_COUPLINGS"].args == "no") {
-        return;
-    }
-    
-    vector<string> valuesDP;
-    valuesDP = get_info(gemcOpt.optMap["DARK_PHOTON"].args);
-    if (valuesDP.size() != 3) {
-        cout << " ERROR, DARK_PHOTON should follow with three numbers: mass, 2*J,P quantum numbers, as in 100*MeV,2,-1" << endl;
-        exit(1);
-    }
-    vector<string> valuesDM;
-    valuesDM = get_info(gemcOpt.optMap["DARK_MATTER"].args);
-    if (valuesDM.size() != 2) {
-        cout << " ERROR, DARK_MATTER should follow with two numbers: mass 2*J,  quantum numbers, as in 100*MeV,1" << endl;
-        exit(1);
-    }
-    vector<string> valuesC;
-    valuesC = get_info(gemcOpt.optMap["DARK_COUPLINGS"].args);
-    if (valuesC.size() != 2) {
-        cout << " ERROR, DARK_COUPLINGS should follow with two numbers: eps and alphaD, as in 1E-4,0.1" << endl;
-        exit(1);
-    }
+  vector<string> values;
+  values = get_info(gemcOpt.optMap["SCALAR_MASS"].args);
+  G4double scalarMass = get_number(values[0]);
 
-    G4double darkPhotonMass = get_number(valuesDP[0]);
-    G4double darkMatterMass = get_number(valuesDM[0]);
-    G4double eps = get_number(valuesC[0]);
-    G4double alphaD = get_number(valuesC[1]);
+  vector<string> valuesBiasDecay = get_info(gemcOpt.optMap["DECAY_BIAS"].args);
+  G4double g_mu = get_number(valuesBiasDecay[0]);
+  G4Scalar::ScalarDefinition(scalarMass, g_mu);
 
-    G4int darkPhotonJ = atoi(valuesDP[1].c_str()); //A.C. no check on the format.
-    G4int darkPhotonP = atoi(valuesDP[2].c_str());
-    G4int darkMatterJ = atoi(valuesDM[1].c_str()); //A.C. no check on the format.
-
-    if (darkPhotonJ < 0) {
-        cout << " ERROR, darkPhoton spin should be >0, you entered: " << darkPhotonJ << endl;
-        exit(1);
-    }
-    if (abs(darkPhotonJ) % 2 != 0) {
-        cout << " ERROR, darkPhoton spin should be integer, you entered: " << darkPhotonJ << endl;
-        exit(1);
-    }
-
-    if (darkMatterJ < 0) {
-        cout << " ERROR, darkMatter spin should be >0, you entered: " << darkMatterJ << endl;
-        exit(1);
-    }
-
-    //First, construct the DM
-    G4DarkMatter::DarkMatterDefinition(darkMatterMass, darkMatterJ);
-    // In the actual version of the code the Dark Photon does not exist 
-    //G4DarkPhoton::DarkPhotonDefinition(darkPhotonMass, darkPhotonJ, darkPhotonP, eps, alphaD);
-
+  vector<string> valuesBiasProduction = get_info(gemcOpt.optMap["PRODUCTION_BIAS"].args);
+  G4double bias = get_number(valuesBiasProduction[0]);
 }
 
 void PhysicsList::ConstructProcess() {
@@ -536,28 +494,30 @@ void PhysicsList::ConstructProcess() {
       
     }
 		
+		
+     //Add some special physics processes
+    //Scalar transport
+    //particle = G4Scalar::Scalar();
+    //pmanager = particle->GetProcessManager();
+    //pmanager->AddDiscreteProcess(new G4Transportation);
 
-      if (gemcOpt.optMap["DARK_PHOTON"].args == "no" || gemcOpt.optMap["DARK_MATTER"].args == "no" || gemcOpt.optMap["DARK_COUPLINGS"].args == "no") {
-                return;
-              } else {
-                //A' production
-                vector<string> valuesC;
-                valuesC = get_info(gemcOpt.optMap["DARK_COUPLINGS"].args);
-                if (valuesC.size() != 2) {
-                  cout << " ERROR, DARK_COUPLINGS should follow with two numbers: eps and alphaD, as in 1E-4,0.1" << endl;
-                  exit(1);
-                }
-                
-                G4double eps = get_number(valuesC[0]);
-                  G4double alphaD = get_number(valuesC[1]);
+    //TO BE CONTROLLED 
+    vector<string> valuesB;
+    valuesB = get_info(gemcOpt.optMap["PRODUCTION_BIAS"].args);
+    
+    G4double bias = get_number(valuesB[0]);
+    particle = G4Positron::Positron();
+    pmanager = particle->GetProcessManager();
+    G4MuonScalarProduction* myMuonScalarProduction = new G4MuonScalarProduction;
+    myMuonScalarProduction->SetCrossSecFactor(bias);
+    
+    //Scalar production
+    particle = G4MuonPlus::MuonPlus();
+    pmanager = particle->GetProcessManager();
+    pmanager->AddDiscreteProcess(myMuonScalarProduction);
 
-                particle = G4DarkMatter::DarkMatter();
-                pmanager = particle->GetProcessManager();
-                G4LDMEleScattering* myLDMEleScattering = new G4LDMEleScattering;
-                  myLDMEleScattering->SetEps(eps);
-                  myLDMEleScattering->SetAlphaD(alphaD);
-                pmanager->AddDiscreteProcess(myLDMEleScattering);
-              }
-
+    particle = G4MuonMinus::MuonMinus();
+    pmanager = particle->GetProcessManager();
+    pmanager->AddDiscreteProcess(myMuonScalarProduction);
   }
 }

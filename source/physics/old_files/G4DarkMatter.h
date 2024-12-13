@@ -1,7 +1,7 @@
 /*
  * G4DarkMatter.h
  *
- *  Created on: March 15, 2020
+ *  Created on: March 15, 20220
  *      Author: celentan
  */
 
@@ -23,13 +23,12 @@ private:
 	}
 	~G4DarkMatter() {
 	}
-    
+
 	/*Since this is a singleton, the mass is used only at the first call*/
 public:
 	static G4DarkMatter* Definition(G4double mass=0.03,G4int twoJ=2);
 	static G4DarkMatter* DarkMatterDefinition(G4double mass=0.03,G4int twoJ=2);
 	static G4DarkMatter* DarkMatter(G4double mass=0.03,G4int twoJ=2);
-    
 };
 
 #endif /* PHYSICS_G4DarkMatter_H_ */

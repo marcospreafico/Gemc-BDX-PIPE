@@ -32,7 +32,8 @@ public:
 
 	double BirksAttenuation(double,double,int,double);
 	double BirksAttenuation2(double,double,int,double);
-    double* WaveForm(double, double*, string); 
+  double* WaveForm(double,double*);
+    double* WaveFormPbwo(double,double*);
 
 	// - electronicNoise: returns a vector of hits generated / by electronics.
 	vector<MHit*> electronicNoise();

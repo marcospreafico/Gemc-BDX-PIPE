@@ -1,0 +1,96 @@
+/*
+ * G4Scalar.cc
+ *
+ *  Created on: May 6, 2018
+ *      Author: celentan
+ */
+
+#include "G4Scalar.h"
+
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ParticleTable.hh"
+
+#include "G4PhaseSpaceDecayChannel.hh"
+#include "G4DecayTable.hh"
+
+
+// ######################################################################
+// ###                         G4Scalar                               ###
+// ######################################################################
+
+G4Scalar* G4Scalar::theInstance = 0;
+G4Scalar* G4Scalar::Definition(G4double mass, G4double g_mu)
+{
+if (theInstance !=0) return theInstance;
+const G4String name = "scalar";
+// search in particle table]
+G4ParticleTable* pTable = G4ParticleTable::GetParticleTable();
+G4ParticleDefinition* anInstance = pTable->FindParticle(name);
+if (anInstance ==0)
+  {
+                                                   
+G4double m_mu = 105.6; 
+
+//leptophilic decay width (S->ee)
+/*                                                    
+  double x = 1-4*me*me/mass/mass;                                          
+  double gammaee = g_mu*g_mu*(me*me/m_mu/m_mu)*(mass/8/M_PI)*pow(x,3./2);
+  double lifetime = hbar_Planck/gammaee;
+/*/
+
+//muon-specific decay width (S->gamma gamma)
+G4double alpha = fine_structure_const;
+G4double pi = M_PI;
+G4double tau = 4.*m_mu*m_mu/mass/mass;
+G4double sqrttau = sqrt(tau);
+G4double arcsin = asin(1./sqrttau);
+G4double F = 2.*tau*(1+(1-tau)*arcsin*arcsin);
+G4double gammagg = alpha*alpha*mass*mass*mass/256/pi/pi/pi;
+gammagg = gammagg * g_mu*g_mu*F*F/m_mu/m_mu;
+
+G4double lifetime = hbar_Planck/gammagg;
+
+
+  // create particle
+  //
+  //    Arguments for constructor are as follows
+  //               name             mass          width         charge
+  //             2*spin           parity  C-conjugation
+  //          2*Isospin       2*Isospin3       G-parity
+  //               type    lepton number  baryon number   PDG encoding
+  //             stable         lifetime    decay table
+  //             shortlived      subType    anti_encoding
+  anInstance = new G4ParticleDefinition(
+                 name, mass, gammagg, 0,
+		    0,               0,                0,
+		    0,               0,                0,
+		 "boson",            0,                0,        12, // pid 12 was 55
+		 false,     lifetime,             NULL,
+		 //true,     -1,             NULL,
+             false,           "scalar"
+              );
+
+  // Scalar decay in two photons
+  G4DecayTable* table = new G4DecayTable();
+//Let Geant4 manage the decay 
+//Change final state to mu to use leptophilic model
+  G4VDecayChannel* mode  = new G4PhaseSpaceDecayChannel("scalar",1.000,2,"gamma","gamma"); 
+  table->Insert(mode);
+  anInstance->SetDecayTable(table);   
+
+
+  }
+  theInstance = reinterpret_cast<G4Scalar*>(anInstance);
+  return theInstance;
+}
+
+G4Scalar*  G4Scalar::ScalarDefinition(G4double mass, G4double g_mu)
+{
+  return Definition(mass, g_mu);
+}
+
+G4Scalar*  G4Scalar::Scalar(G4double mass, G4double g_mu)
+{
+  return Definition(mass, g_mu);
+}

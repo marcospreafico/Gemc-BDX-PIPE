@@ -20,7 +20,6 @@
 G4DarkMatter* G4DarkMatter::theInstance = 0;
 G4DarkMatter* G4DarkMatter::Definition(G4double mass,G4int twoJ)
 {
-
   if (theInstance !=0) return theInstance;
   const G4String name = "DarkMatter";
   // search in particle table
@@ -34,35 +33,19 @@ G4DarkMatter* G4DarkMatter::Definition(G4double mass,G4int twoJ)
   // create particle
   //
   //    Arguments for constructor are as follows
-
-      int PID = 911;
-      std::string type = "";
-      if(twoJ == 0) {
-          PID = 811;
-          type = "scalar";
-      }
-      if(twoJ == 1){
-          PID = 911;
-          type = "fermion";
-      }
-          
-      
-      
-      
+  //               name             mass          width         charge
+  //             2*spin           parity  C-conjugation
+  //          2*Isospin       2*Isospin3       G-parity
+  //               type    lepton number  baryon number   PDG encoding
+  //             stable         lifetime    decay table
+  //             shortlived      subType    anti_encoding
   anInstance = new G4ParticleDefinition(
-                                        
-//               name             mass          width         charge
-                 name,	          mass,         	0,	           0,
-//             2*spin           parity  C-conjugation
-				 twoJ,			    1,	        	0,
-//          2*Isospin       2*Isospin3       G-parity
-                    0,			     0,             0,
-//               type    lepton number  baryon number   PDG encoding
-				 type,               0,             0,          PID,
-//             stable         lifetime    decay table
-				 true,              0,           NULL,
-//             shortlived      subType    anti_encoding
-                    false,         type
+                 name,	mass, 	0,	 0,
+				 twoJ,			1,		0,
+				 0,			 0,                0,
+				 "fermion",            0,        0,        51,
+				 true,     0,             NULL,
+				 false,      "fermion"
               );
 
 

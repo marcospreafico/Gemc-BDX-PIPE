@@ -353,6 +353,7 @@ void evio_output::writeG4RawIntegrated(outputContainer *output, vector<hitOutput
 	}
 }
 
+
 void evio_output::writeG4DgtIntegrated(outputContainer *output, vector<hitOutput> HO, string hitType, map<string, gBank> *banksMap) {
 	gBank thisHitBank = getBankFromMap(hitType, banksMap);
 	gBank dgtBank = getDgtBankFromMap(hitType, banksMap);
@@ -601,16 +602,16 @@ void evio_output::writeFADCMode7(outputContainer *output, vector<hitOutput> HO) 
 
 evioDOMNodeP addVariable(int tag, int num, string type, double value) {
 // return right away if "d"
-    if (type == "d") return evioDOMNode::createEvioDOMNode(tag, num, &value, 1);
+	if (type == "d") return evioDOMNode::createEvioDOMNode(tag, num, &value, 1);
 
 // otherwise check
-    if (type == "i") {
-        int varI = (int) value;
-        return evioDOMNode::createEvioDOMNode(tag, num, &varI, 1);
-    }
+	if (type == "i") {
+		int varI = (int) value;
+		return evioDOMNode::createEvioDOMNode(tag, num, &varI, 1);
+	}
 
 // repeated return to make compiler happy
-    return evioDOMNode::createEvioDOMNode(tag, num, &value, 1);
+	return evioDOMNode::createEvioDOMNode(tag, num, &value, 1);
 
 }
 
