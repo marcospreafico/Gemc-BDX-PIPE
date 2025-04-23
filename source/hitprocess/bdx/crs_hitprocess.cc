@@ -30,11 +30,13 @@ map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
     // Parameter for Crs
                                             // Babar Crs                        PANDA crystals                      L3 crystals
     map<string, double> light_yield_db = {{"CsI_Tl", 50000 * (1. / MeV)}, {"G4_PbWO4", 310 * (1. / MeV)}, {"G4_BGO", 8000 * (1. / MeV)}};
-    map<string, double> attenuation_lenght_db = {{"CsI_Tl", 60 * cm},     {"G4_PbWO4", 60000 * cm},       {"G4_BGO", 25 * cm}};
+    //map<string, double> light_yield_db = {{"CsI_Tl", 700 * (1. / MeV)}, {"G4_PbWO4", 310 * (1. / MeV)}, {"G4_BGO", 8000 * (1. / MeV)}};// TMP
+    map<string, double> attenuation_lenght_db = {{"CsI_Tl", 30 * cm},     {"G4_PbWO4", 60000 * cm},       {"G4_BGO", 25 * cm}};
     map<string, double> optical_coupling_db = {{"CsI_Tl", 0.6866},        {"G4_PbWO4", 0.9},              {"G4_BGO", 0.7}};
     
     double optical_coupling = optical_coupling_db[crs_material];
     double light_yield_crs = light_yield_db[crs_material];
+    light_yield_crs = 600*(1./MeV);
 	double att_length_crs = attenuation_lenght_db[crs_material]; // compatible with NO ATT Lenght as measured for cosmic muons
     double veff_crs = 30 / 1.8 * cm / ns;                     // light velocity in crystal
   
@@ -170,33 +172,34 @@ map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
         
 		//      Right readout
 		peR_crs = int(etotR_crs * light_yield_crs * sensor_qe_crs * optical_coupling * light_coll_crs);
+        //cout << peR_crs << endl;
 		peR_crs = G4Poisson(peR_crs);
         
         //WARNING
-        //test = WaveForm(peR_crs, &tim, crs_material);
+        test = WaveForm(peR_crs, &tim, crs_material);
         
-        //TGraph* WF_new = new TGraph();
-        //for(int s = 0; s < Nsamp_int; s++){
-        //    WF_new->SetPoint(s, s, test[s]);
-        //}
+        TGraph* WF_new = new TGraph();
+        for(int s = 0; s < Nsamp_int; s++){
+            WF_new->SetPoint(s, s, test[s]);
+        }
         
-        //TFile* fout = new TFile("testWF.root", "RECREATE");
-        //fout->cd();
-        //WF_new->Write(); fout->Write(); fout->Close();
+        TFile* fout = new TFile("testWF.root", "RECREATE");
+        fout->cd();
+        WF_new->Write(); fout->Write(); fout->Close();
         
-        //double peR_int_crs_old = 0;
-		//for (unsigned int s = 0; s < Nsamp_int; s++) {
-		//	peR_int_crs += test[s];
-		//}
+        double peR_int_crs_old = 0;
+		for (unsigned int s = 0; s < Nsamp_int; s++) {
+			peR_int_crs += test[s];
+		}
         
         //      Left readout
         peL_crs = int(etotL_crs * light_yield_crs * sensor_qe_crs * optical_coupling * light_coll_crs);
         peL_crs = G4Poisson(peL_crs);
-        //test = WaveForm(peL_crs, &tim, crs_material);
+        test = WaveForm(peL_crs, &tim, crs_material);
         
-        //for (unsigned int s = 0; s < Nsamp_int; s++) {
-        //    peL_int_crs = peL_int_crs + test[s];
-        //}
+        for (unsigned int s = 0; s < Nsamp_int; s++) {
+            peL_int_crs = peL_int_crs + test[s];
+        }
         
         peL_int_crs = peL_crs;
         peR_int_crs = peR_crs;
@@ -238,7 +241,6 @@ map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
 		cout << log_msg << " TDCL=" << TDCL_crs << " TDCR=" << TDCR_crs << " ADCL=" << ADCL_crs << " ADCR=" << ADCR_crs << endl;
 		//cout <<  log_msg << " TDCB=" << TDCB     << " TDCF=" << TDCF    << " ADCB=" << ADCB << " ADCF=" << ADCF << endl;
 	}
-    
 	dgtz["hitn"] = hitn;
 	dgtz["sector"] = sector;
 	dgtz["xch"] = xch;
@@ -249,9 +251,9 @@ map<string, double> crs_HitProcess::integrateDgt(MHit* aHit, int hitn) {
 	dgtz["tdcl"] = TDCL_crs;	  //
 	dgtz["tdcr"] = TDCR_crs;	  // as per ADCR_crs
 	dgtz["adcb"] = Etot_B * 1000;  // deposited energy with Birks
-	dgtz["adcf"] = Etot * 1000;
+	dgtz["adcf"] = ADCL_crs * 1000000;
 	dgtz["tdcb"] = TDCB * 1000.;	  //original time in ps
-	dgtz["tdcf"] = 0;
+	dgtz["tdcf"] = Etot*1000000;
 	return dgtz;
 }
 
