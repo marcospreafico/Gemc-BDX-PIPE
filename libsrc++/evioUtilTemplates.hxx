@@ -1090,7 +1090,7 @@ template <typename T> evioDOMNodeP evioDOMTree::createNode(const string &name, T
  * Boolean function object compares to content type for typename T.
  * Note that this function object cannot deal with unknown or composite node types since they do not have a distinguishing type.
  */
-template <typename T> class typeIs : public __unary_function<const evioDOMNodeP,bool> {
+template <typename T> class typeIs {
 
 public:
   typeIs(void) : type(evioUtil<T>::evioContentType()) {}
@@ -1113,9 +1113,10 @@ private:
 /**
  * Boolean function object compares on type.
  */
-class typeEquals : public __unary_function<const evioDOMNodeP,bool> {
-
+class typeEquals {
 public:
+    using argument_type = const evioDOMNodeP;
+    using result_type = bool;
   typeEquals(int aType) : type(aType) {}
   bool operator()(const evioDOMNodeP node) const {return(node->getContentType()==type);}
 private:
@@ -1130,7 +1131,7 @@ private:
 /**
  * Boolean function object compares on tag.
  */
-class tagEquals : public __unary_function<const evioDOMNodeP,bool> {
+class tagEquals {
 
 public:
   tagEquals(uint16_t aTag) : tag(aTag) {}
@@ -1163,7 +1164,7 @@ private:
 /**
  * Boolean function object compares on num.
  */
-class numEquals : public __unary_function<const evioDOMNodeP,bool> {
+class numEquals {
 
 public:
   numEquals(uint8_t aNum) : num(aNum) {}
@@ -1196,9 +1197,12 @@ private:
 /**
  * Boolean function object compares on tag and num.
  */
-class tagNumEquals : public __unary_function<const evioDOMNodeP, bool> {
+class tagNumEquals {
 
 public:
+    using argument_type = const evioDOMNodeP;
+    using result_type = bool;
+  
   tagNumEquals(uint16_t aTag, uint8_t aNum) : tag(aTag), num(aNum) {}
 
   tagNumEquals(tagNum tn) : tag(tn.first), num(tn.second) {}
@@ -1255,7 +1259,7 @@ private:
 /**
  * Boolean function object compares on parent content type.
  */
-class parentTypeEquals : public __unary_function<const evioDOMNodeP, bool> {
+class parentTypeEquals {
 
 public:
   parentTypeEquals(int aType) : type(aType) {}
@@ -1272,7 +1276,7 @@ private:
 /**
  * Boolean function object compares on parent tag.
  */
-class parentTagEquals : public __unary_function<const evioDOMNodeP, bool> {
+class parentTagEquals {
 
 public:
   parentTagEquals(uint16_t aTag) : tag(aTag) {}
@@ -1289,7 +1293,7 @@ private:
 /**
  * Boolean function object compares on parent num.
  */
-class parentNumEquals : public __unary_function<const evioDOMNodeP, bool> {
+class parentNumEquals  {
 
 public:
   parentNumEquals(uint8_t aNum) : num(aNum) {}
@@ -1306,7 +1310,7 @@ private:
 /**
  * Boolean function object compares on parent tag and num.
  */
-class parentTagNumEquals : public __unary_function<const evioDOMNodeP, bool> {
+class parentTagNumEquals  {
 
 public:
   parentTagNumEquals(uint16_t aTag, uint8_t aNum) : tag(aTag), num(aNum) {}
@@ -1326,7 +1330,7 @@ private:
 /**
  * Boolean function object compares on parent tag and num.
  */
-class parentNameEquals : public __unary_function<const evioDOMNodeP, bool> {
+class parentNameEquals  {
 
 public:
   parentNameEquals(const string &name, const evioDictionary *dictionary) : tag(0), num(0) {
@@ -1381,7 +1385,7 @@ private:
 /**
  * Boolean function object true if container node.
  */
-class isContainer : public __unary_function<const evioDOMNodeP,bool> {
+class isContainer {
 
 public:
   isContainer(void) {}
@@ -1396,7 +1400,7 @@ public:
 /**
  * Boolean function object true if leaf node.
  */
-class isLeaf : public __unary_function<const evioDOMNodeP,bool> {
+class isLeaf {
 
 public:
   isLeaf(void) {}
@@ -1411,7 +1415,7 @@ public:
 /**
  * Function object streams node->toString() to cout.
  */
-class toCout: public __unary_function<const evioDOMNodeP,void> {
+class toCout {
 
 public:
   toCout(void) {}

@@ -211,7 +211,7 @@ void evioDictionary::endElementHandler(void *userData, const char *xmlname) {
  * @param name Name of bank
  * @return tagNum
  */
-tagNum evioDictionary::getTagNum(const string &name) const throw(evioException) {
+tagNum evioDictionary::getTagNum(const string &name) const noexcept(false) {
   map<string,tagNum>::const_iterator iter = getTagNumMap.find(name);
   if(iter!=getTagNumMap.end()) {
     return((*iter).second);
@@ -230,7 +230,7 @@ tagNum evioDictionary::getTagNum(const string &name) const throw(evioException) 
  * @param tn tagNum of bank
  * @return name
  */
-string evioDictionary::getName(tagNum tn) const throw(evioException) {
+string evioDictionary::getName(tagNum tn) const noexcept(false) {
   map<tagNum,string>::const_iterator iter = getNameMap.find(tn);
   if(iter!=getNameMap.end()) {
     return((*iter).second);
@@ -274,7 +274,7 @@ string evioDictionary::getSeparator(void) const {
  * Converts dictionary into string.
  * @return String containing dictionary keys and values
  */
-string evioDictionary::toString(void) const throw(evioException) {
+string evioDictionary::toString(void) const noexcept(false) {
 
   stringstream ss;
 
